@@ -1,6 +1,5 @@
-package com.zpproject;
+package com.zpproject.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,13 +7,15 @@ import android.webkit.WebView;
 import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.zpproject.BaseActivity;
+import com.zpproject.R;
+import com.zpproject.util.ToastAlone;
 
 import org.json.JSONObject;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  * 邮箱：herewinner@163.com
  * 描述：volley
  */
-public class VolleyActivity extends Activity {
+public class VolleyActivity extends BaseActivity {
     Button ok_btn;
     RequestQueue mQueue;
     WebView volley_web;
@@ -43,9 +44,14 @@ public class VolleyActivity extends Activity {
             @Override
             public void onClick(View v) {
 //                stringRequest();
-                jsonRequest();
+//                jsonRequest();
+                showToast();
             }
         });
+    }
+
+    private void showToast() {
+        ToastAlone.show(mContext, "goodday");
     }
 
     private void jsonRequest(){
@@ -53,6 +59,7 @@ public class VolleyActivity extends Activity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.w("cxm", response.toString());
+                ToastAlone.show(VolleyActivity.this, "goodday");
             }
         }, new Response.ErrorListener() {
             @Override

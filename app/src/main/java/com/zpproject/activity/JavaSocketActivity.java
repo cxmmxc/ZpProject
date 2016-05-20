@@ -1,4 +1,4 @@
-package com.zpproject;
+package com.zpproject.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.zpproject.R;
+import com.zpproject.util.ToastAlone;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,6 +42,7 @@ public class JavaSocketActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendMessage();
+                ToastAlone.show(JavaSocketActivity.this, "aaaa");
             }
         });
 
