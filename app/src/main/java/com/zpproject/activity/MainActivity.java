@@ -30,4 +30,8 @@ public class MainActivity extends Activity {
     public void YoutubeOnClick(View view) {
         startActivity(new Intent(this, YoutubeActivity.class));
     }
+
+    public void HoodleOnClick(View view) {
+        startActivity(new Intent(this, HoodleActivity.class));
+    }
 }

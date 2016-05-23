@@ -26,6 +26,8 @@
             />
         <activity android:name=".activity.YoutubeActivity"
             />
+        <activity android:name=".activity.HoodleActivity"
+            />
     </application>
 
 </manifest>

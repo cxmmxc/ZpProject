@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -86,13 +85,13 @@ public class HYLayout extends LinearLayout {
         @Override
         public int getViewVerticalDragRange(View child) {
 //            return super.getViewVerticalDragRange(child);
-            return getHeight() - child.getMeasuredHeight();
+            return getHeight();
         }
 
         @Override
         public int getViewHorizontalDragRange(View child) {
 //            return super.getViewHorizontalDragRange(child);
-            return getWidth() - child.getMeasuredWidth();
+            return getWidth();
         }
 
 
@@ -116,15 +115,24 @@ public class HYLayout extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        LogUtil.v("onTouchEvent");
         mViewDrager.processTouchEvent(event);
         return true;
 //        return super.onTouchEvent(event);
     }
 
     @Override
-    public boolean onInterceptHoverEvent(MotionEvent event) {
-        return mViewDrager.shouldInterceptTouchEvent(event);
-//        return super.onInterceptHoverEvent(event);
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean b = super.dispatchTouchEvent(ev);
+        LogUtil.v("dispatchTouchEvent="+b);
+        return b;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        LogUtil.v("onInterceptTouchEvent");
+//        return mViewDrager.shouldInterceptTouchEvent(ev);
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override

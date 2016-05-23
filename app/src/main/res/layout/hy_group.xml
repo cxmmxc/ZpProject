@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <com.zpproject.view.TestText
         android:layout_margin="10dp"
         android:gravity="center"
         android:layout_gravity="center"
@@ -14,7 +14,7 @@
         android:text="I can be dragged !"
         android:layout_width="100dp"
         android:layout_height="100dp"/>
-    <TextView
+    <com.zpproject.view.TestText
         android:layout_margin="10dp"
         android:gravity="center"
         android:clickable="true"
@@ -23,7 +23,7 @@
         android:text="I can be dragged !"
         android:layout_width="100dp"
         android:layout_height="100dp"/>
-    <TextView
+    <com.zpproject.view.TestText
         android:layout_margin="10dp"
         android:gravity="center"
         android:clickable="true"

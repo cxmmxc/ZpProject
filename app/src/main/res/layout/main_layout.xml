@@ -7,6 +7,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="HoodleOnClick"
+        android:text="HoodleOnClick"
+        android:layout_margin="5dip"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="HYOnClick"
         android:text="HYOnClick"
         android:layout_margin="5dip"
