@@ -12,6 +12,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
+import com.zpproject.util.LogUtil;
+
 /**
  * 作者：Terry.Chen on 2016/5/231525.
  * 邮箱：herewinner@163.com
@@ -24,7 +26,9 @@ public class HoodleGroupView extends ViewGroup {
     private RectF mChildeRectF;
     private VelocityTracker velocityTracker;
     private Scroller mScroller;
-    private int mMaxFlintVelocity;
+    private int mMaxFlintVelocity, mMinFlintVelocity;
+    private int mChildMeasuredWidth,mChildMeasuredHeight;
+    private View chileView;
 
     public HoodleGroupView(Context context) {
         this(context, null);
@@ -43,18 +47,21 @@ public class HoodleGroupView extends ViewGroup {
         mDownPoint = new PointF();
         mChildeRectF = new RectF();
         mScroller = new Scroller(context);
-        mMaxFlintVelocity = ViewConfiguration.getMaximumFlingVelocity();
+        ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
+        mMaxFlintVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
+        mMinFlintVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        View child = getChildAt(0);
+        LogUtil.e("onLayout");
+        chileView = getChildAt(0);
         int measuredWidth = getMeasuredWidth();
         int measuredHeight = getMeasuredHeight();
-        int childMeasuredWidth = child.getMeasuredWidth();
-        int childMeasuredHeight = child.getMeasuredHeight();
-        mChildeRectF.set(measuredWidth / 2 - childMeasuredWidth / 2, measuredHeight / 2 - childMeasuredHeight / 2, measuredWidth / 2 + childMeasuredWidth / 2, measuredHeight / 2 + childMeasuredHeight / 2);
-        child.layout(measuredWidth / 2 - childMeasuredWidth / 2, measuredHeight / 2 - childMeasuredHeight / 2, measuredWidth / 2 + childMeasuredWidth / 2, measuredHeight / 2 + childMeasuredHeight / 2);
+        mChildMeasuredWidth = chileView.getMeasuredWidth();
+        mChildMeasuredHeight = chileView.getMeasuredHeight();
+        mChildeRectF.set(measuredWidth / 2 - mChildMeasuredWidth / 2, measuredHeight / 2 - mChildMeasuredHeight / 2, measuredWidth / 2 + mChildMeasuredWidth / 2, measuredHeight / 2 + mChildMeasuredHeight / 2);
+        chileView.layout(measuredWidth / 2 - mChildMeasuredWidth / 2, measuredHeight / 2 - mChildMeasuredHeight / 2, measuredWidth / 2 + mChildMeasuredWidth / 2, measuredHeight / 2 + mChildMeasuredHeight / 2);
 
     }
 
@@ -66,12 +73,17 @@ public class HoodleGroupView extends ViewGroup {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
 //        return super.onTouchEvent(event);
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain();
-            velocityTracker.addMovement(event);
         }
+        velocityTracker.addMovement(event);
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -95,7 +107,25 @@ public class HoodleGroupView extends ViewGroup {
                 break;
             case MotionEvent.ACTION_UP:
                 //手指抬起，计算当前速率
-                velocityTracker.computeCurrentVelocity(1000);
+                velocityTracker.computeCurrentVelocity(1000, mMaxFlintVelocity);
+                int xVelocity = (int) velocityTracker.getXVelocity();
+                int yVelocity = (int) velocityTracker.getYVelocity();
+                LogUtil.e("xVelo="+xVelocity+",yVelo="+yVelocity);
+                int scrollX = getScrollX();
+                int scrollY = getScrollY();
+
+                LogUtil.e("scrollX=" + scrollX + ",scrollY=" + scrollY);
+                if (Math.abs(xVelocity) > mMinFlintVelocity || Math.abs(yVelocity) > mMinFlintVelocity) {
+                    mScroller.fling(scrollX, scrollY, -xVelocity,  -yVelocity, 0, 100000, 0, 100000);
+                    awakenScrollBars(mScroller.getDuration());
+                    invalidate();
+                }
+                if (velocityTracker != null) {
+                    velocityTracker.clear();
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                LogUtil.e("-----ACTION_CANCEL");
                 break;
         }
         return true;
@@ -104,4 +134,19 @@ public class HoodleGroupView extends ViewGroup {
     private boolean isViewUnderPoint(PointF pointF) {
         return mChildeRectF.contains(pointF.x, pointF.y);
     }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        LogUtil.e("computeScroll---"+mScroller.getCurrX()+","+mScroller.getCurrY());
+        if (mScroller.computeScrollOffset()) {
+            LogUtil.e(mScroller.getCurrX()+"    "+mScroller.getCurrY());
+            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            mChildeRectF.set(chileView.getLeft(), chileView.getTop(), chileView.getRight(), chileView.getBottom());
+            postInvalidate();
+        }else {
+            LogUtil.e(mScroller.getFinalX() + "-final-" + mScroller.getFinalY());
+        }
+    }
+
 }
