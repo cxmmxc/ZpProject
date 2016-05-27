@@ -3,11 +3,13 @@ package com.zpproject.view;
 import android.content.Context;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.Scroller;
 
 import com.zpproject.util.LogUtil;
 
@@ -70,8 +72,8 @@ public class HoodleGroupDragView extends ViewGroup {
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
 //            super.onViewReleased(releasedChild, xvel, yvel);
+            mDragHelper.flingCapturedView(0, 0, getWidth() - mChild.getWidth(),getHeight() - mChild.getHeight());
             invalidate();
-            mDragHelper.flingCapturedView(0, 0, 780,1200);
         }
 
     }
@@ -92,6 +94,7 @@ public class HoodleGroupDragView extends ViewGroup {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mDragHelper.shouldInterceptTouchEvent(ev);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -122,5 +125,7 @@ public class HoodleGroupDragView extends ViewGroup {
         if (mDragHelper.continueSettling(true)) {
             postInvalidate();
         }
+
     }
+
 }
